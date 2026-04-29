@@ -14,15 +14,30 @@ class ResourceSeeder extends Seeder
     public function run(): void
     {
         Resource::create([
-        'name' => 'Habitación 1',
-        'type' => 'Habitación',
-        'available' => true
+        'name' => 'Kennel 1',
+        'type' => 'kennel',
+        'zone' => 'hotel',
+        'size_group' => 'medium',
+        'capacity' => 1,
+        'status' => 'active',
     ]);
 
     Resource::create([
-        'name' => 'Jaula 1',
-        'type' => 'Jaula',
-        'available' => true
+        'name' => 'Patio 1',
+        'type' => 'yard',
+        'zone' => 'daycare',
+        'size_group' => 'large',
+        'capacity' => 5,
+        'status' => 'active',
+    ]);
+
+    Resource::create([
+        'name' => 'Sala apoyo',
+        'type' => 'room',
+        'zone' => 'support',
+        'size_group' => 'all',
+        'capacity' => 2,
+        'status' => 'active',
     ]);
     }
 }

@@ -22,8 +22,13 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
-        $this->call(PetSeeder::class);
-        $this->call(ReservationSeeder::class);
-        $this->call(ResourceSeeder::class);
+        $this->call([
+            PetSeeder::class,
+            ResourceSeeder::class,
+            ServiceSeeder::class,
+            ReservationSeeder::class,
+            DailyReportSeeder::class,
+            MediaSeeder::class,
+        ]);
     }
 }

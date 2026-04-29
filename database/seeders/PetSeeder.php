@@ -13,20 +13,6 @@ class PetSeeder extends Seeder
      */
     public function run(): void
     {
-        Pet::create([
-        'user_id' => 1,
-        'name' => 'Bobby',
-        'species' => 'Perro',
-        'breed' => 'Labrador',
-        'age' => 3,
-    ]);
-
-    Pet::create([
-        'user_id' => 1,
-        'name' => 'Misu',
-        'species' => 'Gato',
-        'breed' => 'Siames',
-        'age' => 2,
-    ]);
+        Pet::factory()->count(10)->create();
     }
 }

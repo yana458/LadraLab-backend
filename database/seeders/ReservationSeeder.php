@@ -14,11 +14,14 @@ class ReservationSeeder extends Seeder
     public function run(): void
     {
         Reservation::create([
-        'user_id' => 1,
+        'client_user_id' => 1,
         'pet_id' => 1,
-        'start_date' => '2026-05-01',
-        'end_date' => '2026-05-05',
-        'status' => 'pending'
+        'service_id' => 1, // placeholder
+        'resource_id' => null,
+        'start_at' => '2026-05-01 10:00:00',
+        'end_at' => '2026-05-05 10:00:00',
+        'status' => 'pending',
+        'notes' => 'Primera reserva'
     ]);
     }
 }

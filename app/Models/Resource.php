@@ -9,7 +9,10 @@ class Resource extends Model
     protected $fillable = [
     'name',
     'type',
-    'available'
+    'zone',
+    'size_group',
+    'capacity',
+    'status'
 ];
 
 // Relación con reservas

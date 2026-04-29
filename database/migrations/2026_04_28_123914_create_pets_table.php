@@ -12,19 +12,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pets', function (Blueprint $table) {
-        $table->id();
+    $table->id();
 
-        // Relación con usuario (dueño)
-        $table->foreignId('user_id')->constrained()->onDelete('cascade');
+    // dueño
+    $table->foreignId('owner_user_id')
+          ->constrained('users')
+          ->onDelete('cascade');
 
-        // Datos de la mascota
-        $table->string('name');
-        $table->string('species');
-        $table->string('breed')->nullable();
-        $table->integer('age')->nullable();
-
-        $table->timestamps();
-    });
+    $table->string('name', 80);
+    $table->string('species', 50)->default('dog');
+    $table->string('breed', 80)->nullable();
+    $table->enum('size', ['toy','small','medium','large'])->nullable();
+    $table->date('birth_date')->nullable();
+    $table->text('care_notes')->nullable();
+    $table->string('photo_path')->nullable();
+    $table->timestamps();
+});
     }
 
     /**

@@ -7,25 +7,29 @@ use Illuminate\Database\Eloquent\Model;
 class Reservation extends Model
 {
     protected $fillable = [
-    'user_id',
+    'client_user_id',
     'pet_id',
-    'start_date',
-    'end_date',
-    'status'
+    'service_id',
+    'resource_id',
+    'start_at',
+    'end_at',
+    'status',
+    'notes'
 ];
 
-// Relación con usuario
-public function user()
+// Cliente
+public function client()
 {
-    return $this->belongsTo(User::class);
+    return $this->belongsTo(User::class, 'client_user_id');
 }
 
-// Relación con mascota
+// Mascota
 public function pet()
 {
     return $this->belongsTo(Pet::class);
 }
 
+// Recurso
 public function resource()
 {
     return $this->belongsTo(Resource::class);

@@ -12,19 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('resources', function (Blueprint $table) {
-        $table->id();
-
-        // Nombre del recurso
-        $table->string('name');
-
-        // Tipo: habitación, jaula...
-        $table->string('type');
-
-        // Si está disponible o no
-        $table->boolean('available')->default(true);
-
-        $table->timestamps();
-    });
+    $table->id();
+    $table->string('name', 80);
+    $table->enum('type', ['kennel','yard','room','other'])->default('kennel');
+    $table->enum('zone', ['hotel','daycare','support'])->default('hotel');
+    $table->enum('size_group', ['toy_small','medium','large','all'])->default('all');
+    $table->unsignedInteger('capacity')->default(1);
+    $table->enum('status', ['active','cleaning','disabled'])->default('active');
+    $table->timestamps();
+});
     }
 
     /**

@@ -3,21 +3,27 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Pet extends Model
 {
+    use HasFactory;
     protected $fillable = [
-    'user_id',
+    'owner_user_id',
     'name',
     'species',
     'breed',
-    'age'
+    'size',
+    'birth_date',
+    'care_notes',
+    'photo_path'
 ];
 
+
 // Relación: una mascota pertenece a un usuario
-public function user()
+public function owner()
 {
-    return $this->belongsTo(User::class);
+    return $this->belongsTo(User::class, 'owner_user_id');
 }
 
 // Relación: una mascota tiene varias reservas
