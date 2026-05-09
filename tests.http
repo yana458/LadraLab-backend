@@ -1,0 +1,12 @@
+### LOGIN
+POST http://127.0.0.1:8000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "vleannon@example.org",
+  "password": "password"
+}
+
+### STAFF TEST
+GET http://127.0.0.1:8000/api/staff/pets
+Authorization: Bearer 1|b6U5Puqsldo1XlEqTXSRmzGxUJDrl9GkRcOq1lZHc2603f90

@@ -56,7 +56,7 @@ Route::get('/services/{service}', [ServiceController::class, 'show']);
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'role:client'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
@@ -92,7 +92,7 @@ Route::middleware('auth:sanctum')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth:sanctum')->prefix('staff')->group(function () {
+Route::middleware(['auth:sanctum', 'role:staff,admin'])->prefix('staff')->group(function () {
 
     // Pets del centro
     Route::get('/pets', [PetController::class, 'staffIndex']);
@@ -119,7 +119,7 @@ Route::middleware('auth:sanctum')->prefix('staff')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'role:staff,admin'])->group(function () {
 
     Route::apiResource('resources', ResourceController::class);
 });
@@ -130,7 +130,7 @@ Route::middleware('auth:sanctum')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'role:staff,admin'])->group(function () {
 
     Route::apiResource('daily-reports', DailyReportController::class);
 

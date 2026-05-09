@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Pet;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,13 +19,12 @@ class PetFactory extends Factory
     public function definition(): array
     {
           return [
-            'owner_user_id' => 1, // de momento fijo
-
+           'owner_user_id' => User::where('role', 'client')
+                ->inRandomOrder()
+                ->first()
+                ?->id,
             'name' => fake()->firstName(),
-
-            // SOLO PERROS
             'species' => 'dog',
-
             'breed' => fake()->randomElement([
                 'Labrador',
                 'Bulldog',
@@ -32,15 +32,11 @@ class PetFactory extends Factory
                 'Beagle',
                 'Poodle'
             ]),
-
             'size' => fake()->randomElement([
                 'toy', 'small', 'medium', 'large'
             ]),
-
             'birth_date' => fake()->date(),
-
             'care_notes' => fake()->sentence(),
-
             'photo_path' => null,
         ];
     }
