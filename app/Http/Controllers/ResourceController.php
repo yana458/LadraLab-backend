@@ -12,9 +12,9 @@ class ResourceController extends Controller
      */
     public function index()
     {
-         return response()->json([
-        'data' => Resource::all()
-    ]);
+        return response()->json([
+            'data' => Resource::orderBy('name')->get()
+        ]);
     }
 
     /**
@@ -30,18 +30,22 @@ class ResourceController extends Controller
      */
     public function store(Request $request)
     {
-         $validated = $request->validate([
-        'name' => 'required|string',
-        'type' => 'required|string',
-        'available' => 'boolean'
-    ]);
-
-    $resource = Resource::create($validated);
-
-    return response()->json([
-        'message' => 'Recurso creado',
-        'data' => $resource
-    ], 201);
+        // VALIDACIÓN
+        $validated = $request->validate([
+            'name' => 'required|string|max:80',
+            'type' => 'required|string|in:kennel,yard,room,other',
+            'zone' => 'required|string|in:hotel,daycare,support',
+            'size_group' => 'required|string|in:toy_small,medium,large,all',
+            'capacity' => 'required|integer|min:1',
+            'status' => 'required|string|in:active,cleaning,disabled',
+        ]);
+        // CREAR RECURSO
+        $resource = Resource::create($validated);
+        // RESPUESTA
+        return response()->json([
+            'message' => 'Recurso creado correctamente',
+            'data' => $resource
+        ], 201);
     }
 
     /**
@@ -49,7 +53,9 @@ class ResourceController extends Controller
      */
     public function show(Resource $resource)
     {
-        //
+        return response()->json([
+            'data' => $resource
+        ]);
     }
 
     /**
@@ -65,7 +71,24 @@ class ResourceController extends Controller
      */
     public function update(Request $request, Resource $resource)
     {
-        //
+        // VALIDACIÓN
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:80',
+            'type' => 'sometimes|string|in:kennel,yard,room,other',
+            'zone' => 'sometimes|string|in:hotel,daycare,support',
+            'size_group' => 'sometimes|string|in:toy_small,medium,large,all',
+            'capacity' => 'sometimes|integer|min:1',
+            'status' => 'sometimes|string|in:active,cleaning,disabled',
+        ]);
+
+        // ACTUALIZAR
+        $resource->update($validated);
+
+        // RESPUESTA
+        return response()->json([
+            'message' => 'Recurso actualizado correctamente',
+            'data' => $resource
+        ]);
     }
 
     /**
@@ -73,6 +96,10 @@ class ResourceController extends Controller
      */
     public function destroy(Resource $resource)
     {
-        //
+        $resource->delete();
+
+        return response()->json([
+            'message' => 'Recurso eliminado correctamente'
+        ]);
     }
 }

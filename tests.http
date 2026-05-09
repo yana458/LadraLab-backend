@@ -141,3 +141,42 @@ Accept: application/json
 ### SERVICE DETAIL
 GET http://127.0.0.1:8000/api/services/1
 Accept: application/json
+
+### STAFF RESOURCES
+GET http://127.0.0.1:8000/api/resources
+Accept: application/json
+#(token de staff)
+Authorization: Bearer 4|IfMa4YFfZqZA0nSEN06nZUTIrYTLlG2ctf8mfbWA5082224d
+
+### CLIENT -> RESOURCES
+GET http://127.0.0.1:8000/api/resources
+Accept: application/json
+#(token de client) (debe fallar)
+Authorization: Bearer 5|BjRsg18GfMWQhAs9513nGM8eGYMghKkd28m8Se329a5b891f
+
+### STAFF CREATE RESOURCE
+POST http://127.0.0.1:8000/api/resources
+Content-Type: application/json
+Accept: application/json
+#(token de staff)
+Authorization: Bearer 6|z41SZ0NEKVXGqGDnnCi3oJ9zVucKXd1PurJPoIF5c36f7ae5
+
+{
+  "name": "Box Norte 1",
+  "type": "room",
+  "zone": "hotel",
+  "size_group": "medium",
+  "capacity": 2,
+  "status": "active"
+}
+
+### STAFF UPDATE RESOURCE
+PATCH http://127.0.0.1:8000/api/resources/1
+Content-Type: application/json
+Accept: application/json
+#(token de staff)
+Authorization: Bearer 6|z41SZ0NEKVXGqGDnnCi3oJ9zVucKXd1PurJPoIF5c36f7ae5
+
+{
+  "status": "cleaning"
+}
