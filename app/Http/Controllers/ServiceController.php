@@ -12,7 +12,14 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json([
+            'data' => Service::where(
+                'is_active',
+                true
+            )
+            ->orderBy('name')
+            ->get()
+        ]);
     }
 
     /**
@@ -36,7 +43,17 @@ class ServiceController extends Controller
      */
     public function show(Service $service)
     {
-        //
+        // VERIFICAR QUE EL SERVICIO ESTÉ ACTIVO
+        if (!$service->is_active) {
+            return response()->json([
+                'message' => 'Servicio no disponible'
+            ], 404);
+        }
+
+        // RESPUESTA
+        return response()->json([
+            'data' => $service
+        ]);
     }
 
     /**
