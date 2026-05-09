@@ -40,4 +40,14 @@ class User extends Authenticatable
             'last_login_at' => 'datetime',
         ];
     }
+
+        public function pets()
+    {
+        return $this->hasMany(Pet::class, 'owner_user_id');
+    }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'client_user_id');
+    }
 }

@@ -1,12 +1,123 @@
-### LOGIN
+### LOGIN CLIENT
+#(de los logins es que sacamos los tokens para hacer los test)
 POST http://127.0.0.1:8000/api/auth/login
 Content-Type: application/json
+Accept: application/json
 
 {
-  "email": "vleannon@example.org",
+  "email": "cliente@ladralab.com",
   "password": "password"
 }
 
-### STAFF TEST
+### LOGIN STAFF
+POST http://127.0.0.1:8000/api/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "staff@ladralab.com",
+  "password": "password"
+}
+
+### LOGIN ADMIN
+POST http://127.0.0.1:8000/api/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "admin@ladralab.com",
+  "password": "password"
+}
+
+### CLIENT -> STAFF (403) (si el cliente intenta entrar como staff, no se le permite)
 GET http://127.0.0.1:8000/api/staff/pets
-Authorization: Bearer 1|b6U5Puqsldo1XlEqTXSRmzGxUJDrl9GkRcOq1lZHc2603f90
+Accept: application/json
+Authorization: Bearer 1|dURZ7tX6hV5PFlNRNIdYTfq2zxl4H6yAbIyGyURN685c61e0
+
+### STAFF -> STAFF
+GET http://127.0.0.1:8000/api/staff/pets
+Accept: application/json
+Authorization: Bearer 2|rJE3p3sSL1wY0CXpLpm3fAZ9po5jcdyVZpsj8QyF5dc74248
+
+### ADMIN -> STAFF
+GET http://127.0.0.1:8000/api/staff/pets
+Accept: application/json
+Authorization: Bearer 3|xs2LvUMYBZC6gA4BGFgKoktBctxbagzcIsv3VBkR526ae683
+
+### CLIENT PETS
+GET http://127.0.0.1:8000/api/pets
+Accept: application/json
+Authorization: Bearer 1|dURZ7tX6hV5PFlNRNIdYTfq2zxl4H6yAbIyGyURN685c61e0
+
+### CLIENT CREATE PET
+POST http://127.0.0.1:8000/api/pets
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 1|dURZ7tX6hV5PFlNRNIdYTfq2zxl4H6yAbIyGyURN685c61e0
+
+{
+  "name": "Luna",
+  "species": "dog",
+  "breed": "Beagle",
+  "size": "medium",
+  "care_notes": "Muy juguetona"
+}
+
+### CLIENT RESERVATIONS
+GET http://127.0.0.1:8000/api/reservations
+Accept: application/json
+Authorization: Bearer 1|dURZ7tX6hV5PFlNRNIdYTfq2zxl4H6yAbIyGyURN685c61e0
+
+### CLIENT CREATE RESERVATION
+POST http://127.0.0.1:8000/api/reservations
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 1|dURZ7tX6hV5PFlNRNIdYTfq2zxl4H6yAbIyGyURN685c61e0
+
+{
+  "pet_id": 11,
+  "service_id": 1,
+  "start_at": "2026-05-10 10:00:00",
+  "end_at": "2026-05-10 14:00:00",
+  "notes": "Primera estancia"
+}
+
+### CLIENT CANCEL RESERVATION
+PATCH http://127.0.0.1:8000/api/reservations/1/cancel
+Accept: application/json
+Authorization: Bearer 1|dURZ7tX6hV5PFlNRNIdYTfq2zxl4H6yAbIyGyURN685c61e0
+
+### CLIENT -> STAFF RESERVATIONS (debe fallar)
+GET http://127.0.0.1:8000/api/staff/reservations
+Accept: application/json
+Authorization: Bearer 1|dURZ7tX6hV5PFlNRNIdYTfq2zxl4H6yAbIyGyURN685c61e0
+
+### STAFF RESERVATIONS
+GET http://127.0.0.1:8000/api/staff/reservations
+Accept: application/json
+Authorization: Bearer 2|rJE3p3sSL1wY0CXpLpm3fAZ9po5jcdyVZpsj8QyF5dc74248
+
+### STAFF UPDATE RESERVATION
+PATCH http://127.0.0.1:8000/api/staff/reservations/1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 2|rJE3p3sSL1wY0CXpLpm3fAZ9po5jcdyVZpsj8QyF5dc74248
+
+{
+  "status": "confirmed"
+}
+
+### STAFF CREATE RESERVATION
+POST http://127.0.0.1:8000/api/staff/reservations
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 2|rJE3p3sSL1wY0CXpLpm3fAZ9po5jcdyVZpsj8QyF5dc74248
+
+{
+  "client_user_id": 1,
+  "pet_id": 4,
+  "service_id": 1,
+  "start_at": "2026-05-12 09:00:00",
+  "end_at": "2026-05-12 12:00:00",
+  "notes": "Reserva creada por recepción"
+}

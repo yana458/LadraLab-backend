@@ -10,11 +10,14 @@ class PetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         return response()->json([
-        'data' => Pet::all()
-    ]);
+            'data' => Pet::where(
+               'owner_user_id',
+                $request->user()->id
+            )->get()
+        ]);
     }
 
     /**
@@ -32,15 +35,21 @@ class PetController extends Controller
     {
          // VALIDACIÓN DE DATOS
     $validated = $request->validate([
-        'user_id' => 'required|exists:users,id',
         'name' => 'required|string|max:255',
         'species' => 'required|string|max:255',
         'breed' => 'nullable|string|max:255',
-        'age' => 'nullable|integer|min:0',
+        'size' => 'nullable|string|max:50',
+        'birth_date' => 'nullable|date',
+        'care_notes' => 'nullable|string',
+        'photo_path' => 'nullable|string',
     ]);
 
     // CREAR MASCOTA
-    $pet = Pet::create($validated);
+    $pet = Pet::create([
+        ...$validated,
+        // OWNER DESDE USUARIO AUTENTICADO
+        'owner_user_id' => $request->user()->id,
+    ]);
 
     // RESPUESTA
     return response()->json([
@@ -52,11 +61,20 @@ class PetController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Pet $pet)
+    public function show(Request $request, Pet $pet)
     {
+            // Verificar ownership
+        if ($pet->owner_user_id !== $request->user()->id) {
+
+            return response()->json([
+                'message' => 'No tienes permisos para acceder a esta mascota'
+            ], 403);
+        }
+
+        // Respuesta correcta
         return response()->json([
-        'data' => $pet
-    ]);
+            'data' => $pet
+        ]);
     }
 
     /**
@@ -72,12 +90,24 @@ class PetController extends Controller
      */
     public function update(Request $request, Pet $pet)
     {
+        // Verificar ownership
+        if ($pet->owner_user_id !== $request->user()->id) {
+
+            return response()->json([
+                'message' => 'No tienes permisos para modificar esta mascota'
+            ], 403);
+        }
+
+        // VALIDACIÓN
         $validated = $request->validate([
-        'name' => 'sometimes|string|max:255',
-        'species' => 'sometimes|string|max:255',
-        'breed' => 'nullable|string|max:255',
-        'age' => 'nullable|integer|min:0',
-    ]);
+            'name' => 'sometimes|string|max:255',
+            'species' => 'sometimes|string|max:255',
+            'breed' => 'nullable|string|max:255',
+            'size' => 'nullable|string|max:50',
+            'birth_date' => 'nullable|date',
+            'care_notes' => 'nullable|string',
+            'photo_path' => 'nullable|string',
+        ]);
 
     $pet->update($validated);
 
@@ -92,10 +122,33 @@ class PetController extends Controller
      */
     public function destroy(Pet $pet)
     {
-         $pet->delete();
+        
+    // Verificar ownership
+    if ($pet->owner_user_id !== $request->user()->id) {
+
+        return response()->json([
+            'message' => 'No tienes permisos para modificar esta mascota'
+        ], 403);
+    }
+    
+    $pet->delete();
 
     return response()->json([
         'message' => 'Mascota eliminada'
     ]);
+    }
+
+    public function staffIndex()
+    {
+        return response()->json([
+            'data' => Pet::with('owner')->get()
+        ]);
+    }
+
+    public function staffShow(Pet $pet)
+    {
+        return response()->json([
+            'data' => $pet->load('owner')
+        ]);
     }
 }

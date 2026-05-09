@@ -20,4 +20,9 @@ class Service extends Model
         'slot_interval_min',
         'is_active'
     ];
+
+        public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
 }

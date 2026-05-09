@@ -28,4 +28,9 @@ class DailyReport extends Model
     {
         return $this->belongsTo(Reservation::class);
     }
+
+        public function media()
+    {
+        return $this->hasMany(Media::class);
+    }
 }

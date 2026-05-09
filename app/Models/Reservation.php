@@ -34,4 +34,10 @@ public function resource()
 {
     return $this->belongsTo(Resource::class);
 }
+
+//servicio
+public function service()
+{
+    return $this->belongsTo(Service::class);
+}
 }
