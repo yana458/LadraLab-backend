@@ -188,17 +188,21 @@ Accept: application/json
 #(token de staff)
 Authorization: Bearer 8|k9snvcgPQKnuXPta2MsuAnovrFLOlx51AQAtJiH95c7edafb
 
-### STAFF CREATE MEDIA
+### STAFF UPLOAD MEDIA
 POST http://127.0.0.1:8000/api/daily-reports/1/media
-Content-Type: application/json
-Accept: application/json
-#(token de staff)
 Authorization: Bearer 8|k9snvcgPQKnuXPta2MsuAnovrFLOlx51AQAtJiH95c7edafb
+Content-Type: multipart/form-data; boundary=Boundary123
 
-{
-  "file_path": "images/dog1.jpg",
-  "file_type": "image"
-}
+--Boundary123
+Content-Disposition: form-data; name="file_type"
+
+image
+--Boundary123
+Content-Disposition: form-data; name="file"; filename="test.jpg"
+Content-Type: image/jpeg
+
+< ./test.jpg
+--Boundary123--
 
 ### STAFF DELETE MEDIA
 DELETE http://127.0.0.1:8000/api/daily-reports/1/media/1

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Media;
 use App\Models\DailyReport;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MediaController extends Controller
 {
@@ -26,24 +27,35 @@ class MediaController extends Controller
      */
     public function store(Request $request, DailyReport $dailyReport) 
     {
-        // VALIDACIÓN
+         // VALIDACIÓN
         $validated = $request->validate([
-            'file_path' => 'required|string|max:255',
+            'file' => 'required|file|max:5120',
             'file_type' => 'required|string|in:image,video,document',
         ]);
 
+        // GUARDAR ARCHIVO
+        $path = $request->file('file')->store(
+            'daily-reports',
+            'public'
+        );
+
         // CREAR MEDIA
         $media = Media::create([
-            ...$validated,
             'daily_report_id' => $dailyReport->id,
+            'file_path' => $path,
+            'file_type' => $validated['file_type'],
             'uploaded_at' => now(),
         ]);
 
         // RESPUESTA
         return response()->json([
-            'message' => 'Archivo añadido correctamente',
-            'data' => $media
-
+            'message' => 'Archivo subido correctamente',
+            'data' => [
+                'id' => $media->id,
+                'file_type' => $media->file_type,
+                'file_path' => $media->file_path,
+                'url' => asset('storage/' . $media->file_path),
+            ]
         ], 201);
     }
 
@@ -60,7 +72,12 @@ class MediaController extends Controller
             ], 404);
         }
 
-        // ELIMINAR
+        // ELIMINAR ARCHIVO FÍSICO
+        Storage::disk('public')->delete(
+            $media->file_path
+        );
+
+        // ELIMINAR REGISTRO
         $media->delete();
 
         // RESPUESTA
