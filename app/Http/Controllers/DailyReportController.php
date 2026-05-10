@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DailyReport;
 use Illuminate\Http\Request;
+use App\Models\Reservation;
 
 class DailyReportController extends Controller
 {
@@ -12,7 +13,12 @@ class DailyReportController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json([
+            'data' => DailyReport::with([
+                'reservation',
+                'media'
+            ])->get()
+        ]);
     }
 
     /**
@@ -28,7 +34,38 @@ class DailyReportController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // VALIDACIÓN
+        $validated = $request->validate([
+            'reservation_id' => 'required|exists:reservations,id',
+            'report_date' => 'required|date',
+            'status' => 'required|string|in:draft,published',
+            'food_done' => 'boolean',
+            'walk_done' => 'boolean',
+            'rest_done' => 'boolean',
+            'hygiene_done' => 'boolean',
+            'medication_done' => 'boolean',
+            'play_done' => 'boolean',
+            'summary' => 'nullable|string',
+            'observations' => 'nullable|string',
+        ]);
+
+        // SI ESTÁ PUBLICADO
+        // ASIGNAR FECHA
+        if ($validated['status'] === 'published') {
+            $validated['published_at'] = now();
+        }
+
+        // CREAR REPORT
+        $dailyReport = DailyReport::create($validated);
+
+        // RESPUESTA
+        return response()->json([
+            'message' => 'Informe diario creado correctamente',
+            'data' => $dailyReport->load([
+                'reservation',
+                'media'
+            ])
+        ], 201);
     }
 
     /**
@@ -36,7 +73,12 @@ class DailyReportController extends Controller
      */
     public function show(DailyReport $dailyReport)
     {
-        //
+        return response()->json([
+            'data' => $dailyReport->load([
+                'reservation',
+                'media'
+            ])
+        ]);
     }
 
     /**
@@ -52,7 +94,38 @@ class DailyReportController extends Controller
      */
     public function update(Request $request, DailyReport $dailyReport)
     {
-        //
+        // VALIDACIÓN
+        $validated = $request->validate([
+            'status' => 'sometimes|string|in:draft,published',
+            'food_done' => 'sometimes|boolean',
+            'walk_done' => 'sometimes|boolean',
+            'rest_done' => 'sometimes|boolean',
+            'hygiene_done' => 'sometimes|boolean',
+            'medication_done' => 'sometimes|boolean',
+            'play_done' => 'sometimes|boolean',
+            'summary' => 'nullable|string',
+            'observations' => 'nullable|string',
+        ]);
+
+        // SI PUBLICADO
+        if (
+            isset($validated['status']) &&
+            $validated['status'] === 'published'
+        ) {
+            $validated['published_at'] = now();
+        }
+
+        // ACTUALIZAR
+        $dailyReport->update($validated);
+
+        // RESPUESTA
+        return response()->json([
+            'message' => 'Informe actualizado correctamente',
+            'data' => $dailyReport->load([
+                'reservation',
+                'media'
+            ])
+        ]);
     }
 
     /**
@@ -60,6 +133,66 @@ class DailyReportController extends Controller
      */
     public function destroy(DailyReport $dailyReport)
     {
-        //
+        $dailyReport->delete();
+
+        return response()->json([
+            'message' => 'Informe eliminado correctamente'
+        ]);
+    }
+
+    public function reservationReports(Request $request, Reservation $reservation)
+    {
+        $user = $request->user();
+
+        // SI ES CLIENTE
+        // VERIFICAR OWNERSHIP
+        if (
+            $user->role === 'client' &&
+            $reservation->client_user_id !== $user->id
+        ) {
+            return response()->json([
+                'message' => 'No tienes permisos para acceder a estos informes'
+            ], 403);
+        }
+
+        // RESPUESTA
+        return response()->json([
+            'data' => DailyReport::with('media')
+                ->where(
+                    'reservation_id',
+                    $reservation->id
+                )
+                ->get()
+        ]);
+    }
+
+    public function summary(Request $request, Reservation $reservation)
+    {
+        $user = $request->user();
+
+        // OWNERSHIP CLIENTE
+        if (
+            $user->role === 'client' &&
+            $reservation->client_user_id !== $user->id
+        ) {
+            return response()->json([
+                'message' => 'No tienes permisos para acceder al resumen'
+            ], 403);
+        }
+
+        // OBTENER REPORTS
+        $reports = DailyReport::where(
+            'reservation_id',
+            $reservation->id
+        )->get();
+
+        // RESPUESTA
+        return response()->json([
+            'reservation_id' => $reservation->id,
+            'total_reports' => $reports->count(),
+            'published_reports' => $reports
+                ->where('status', 'published')
+                ->count(),
+        ]);
     }
 }

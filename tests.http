@@ -1,3 +1,4 @@
+####PARA HACER TODOS ESTOS TESTS SE NECESITA LA EXTENSION REST CLIENT!!!
 ### LOGIN CLIENT
 #(de los logins es que sacamos los tokens para hacer los test)
 POST http://127.0.0.1:8000/api/auth/login
@@ -180,3 +181,33 @@ Authorization: Bearer 6|z41SZ0NEKVXGqGDnnCi3oJ9zVucKXd1PurJPoIF5c36f7ae5
 {
   "status": "cleaning"
 }
+
+### STAFF MEDIA LIST
+GET http://127.0.0.1:8000/api/daily-reports/1/media
+Accept: application/json
+#(token de staff)
+Authorization: Bearer 8|k9snvcgPQKnuXPta2MsuAnovrFLOlx51AQAtJiH95c7edafb
+
+### STAFF CREATE MEDIA
+POST http://127.0.0.1:8000/api/daily-reports/1/media
+Content-Type: application/json
+Accept: application/json
+#(token de staff)
+Authorization: Bearer 8|k9snvcgPQKnuXPta2MsuAnovrFLOlx51AQAtJiH95c7edafb
+
+{
+  "file_path": "images/dog1.jpg",
+  "file_type": "image"
+}
+
+### STAFF DELETE MEDIA
+DELETE http://127.0.0.1:8000/api/daily-reports/1/media/1
+Accept: application/json
+#(token de staff)
+Authorization: Bearer 8|k9snvcgPQKnuXPta2MsuAnovrFLOlx51AQAtJiH95c7edafb
+
+### CLIENT -> MEDIA (debe fallar)
+GET http://127.0.0.1:8000/api/daily-reports/1/media
+Accept: application/json
+#(token de client)
+Authorization: Bearer 7|pvlkv7RALA5FfWEKjP8ZxDpACZvivWAYaYMVwTFp41507012

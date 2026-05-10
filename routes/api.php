@@ -11,6 +11,7 @@ use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\DailyReportController;
 // SERVICES
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\MediaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -133,6 +134,36 @@ Route::middleware(['auth:sanctum', 'role:staff,admin'])->group(function () {
 Route::middleware(['auth:sanctum', 'role:staff,admin'])->group(function () {
 
     Route::apiResource('daily-reports', DailyReportController::class);
+
+    /*
+    |--------------------------------------------------------------------------
+    | MEDIA
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/daily-reports/{dailyReport}/media',
+        [MediaController::class, 'index']
+    );
+
+    Route::post(
+        '/daily-reports/{dailyReport}/media',
+        [MediaController::class, 'store']
+    );
+
+    Route::delete(
+        '/daily-reports/{dailyReport}/media/{media}',
+        [MediaController::class, 'destroy']
+    );
+});
+
+/*
+|--------------------------------------------------------------------------
+| DAILY REPORTS - CLIENT + STAFF
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get(
         '/reservations/{reservation}/daily-reports',

@@ -3,63 +3,69 @@
 namespace App\Http\Controllers;
 
 use App\Models\Media;
+use App\Models\DailyReport;
 use Illuminate\Http\Request;
 
 class MediaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Listar media de un informe diario
      */
-    public function index()
+    public function index(DailyReport $dailyReport)
     {
-        //
+        return response()->json([
+            'data' => Media::where(
+                'daily_report_id',
+                $dailyReport->id
+            )->get()
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Crear media para un informe diario
      */
-    public function create()
+    public function store(Request $request, DailyReport $dailyReport) 
     {
-        //
+        // VALIDACIÓN
+        $validated = $request->validate([
+            'file_path' => 'required|string|max:255',
+            'file_type' => 'required|string|in:image,video,document',
+        ]);
+
+        // CREAR MEDIA
+        $media = Media::create([
+            ...$validated,
+            'daily_report_id' => $dailyReport->id,
+            'uploaded_at' => now(),
+        ]);
+
+        // RESPUESTA
+        return response()->json([
+            'message' => 'Archivo añadido correctamente',
+            'data' => $media
+
+        ], 201);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Eliminar media
      */
-    public function store(Request $request)
+    public function destroy(DailyReport $dailyReport, Media $media) 
     {
-        //
-    }
+        // VERIFICAR QUE EL MEDIA
+        // PERTENECE AL REPORT
+        if ($media->daily_report_id !== $dailyReport->id) {
+            return response()->json([
+                'message' => 'El archivo no pertenece al informe indicado'
+            ], 404);
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Media $media)
-    {
-        //
-    }
+        // ELIMINAR
+        $media->delete();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Media $media)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Media $media)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Media $media)
-    {
-        //
+        // RESPUESTA
+        return response()->json([
+            'message' => 'Archivo eliminado correctamente'
+        ]);
     }
 }
