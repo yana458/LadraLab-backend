@@ -30,36 +30,55 @@ Accept: application/json
   "password": "password"
 }
 
+### ADMIN USERS
+GET http://127.0.0.1:8000/api/admin/users
+#(token de admin)
+Authorization: Bearer (token de admin)
+
+### CREATE STAFF
+POST http://127.0.0.1:8000/api/admin/users
+Content-Type: application/json
+#(token de admin)
+Authorization: Bearer (token de admin)
+{
+  "name": "Staff Test",
+  "email": "stafftest@ladralab.com",
+  "password": "password",
+  "phone": "666111222",
+  "role": "staff",
+  "is_active": true
+}
+
 ### CLIENT -> STAFF (403) (si el cliente intenta entrar como staff, no se le permite)
 GET http://127.0.0.1:8000/api/staff/pets
 Accept: application/json
 #(token de client)
-Authorization: Bearer 1|dURZ7tX6hV5PFlNRNIdYTfq2zxl4H6yAbIyGyURN685c61e0 
+Authorization: Bearer (token de client)
 
 ### STAFF -> STAFF
 GET http://127.0.0.1:8000/api/staff/pets
 Accept: application/json
 #(token de staff)
-Authorization: Bearer 2|rJE3p3sSL1wY0CXpLpm3fAZ9po5jcdyVZpsj8QyF5dc74248
+Authorization: Bearer (token de staff)
 
 ### ADMIN -> STAFF
 GET http://127.0.0.1:8000/api/staff/pets
 Accept: application/json
 #(token de admin)
-Authorization: Bearer 3|xs2LvUMYBZC6gA4BGFgKoktBctxbagzcIsv3VBkR526ae683
+Authorization: Bearer (token de admin)
 
 ### CLIENT PETS
 GET http://127.0.0.1:8000/api/pets
 Accept: application/json
 #(token de client)
-Authorization: Bearer 1|dURZ7tX6hV5PFlNRNIdYTfq2zxl4H6yAbIyGyURN685c61e0
+Authorization: Bearer (token de client)
 
 ### CLIENT CREATE PET
 POST http://127.0.0.1:8000/api/pets
 Content-Type: application/json
 Accept: application/json
 #(token de client)
-Authorization: Bearer 1|dURZ7tX6hV5PFlNRNIdYTfq2zxl4H6yAbIyGyURN685c61e0
+Authorization: Bearer (token de client)
 
 {
   "name": "Luna",
@@ -73,14 +92,14 @@ Authorization: Bearer 1|dURZ7tX6hV5PFlNRNIdYTfq2zxl4H6yAbIyGyURN685c61e0
 GET http://127.0.0.1:8000/api/reservations
 Accept: application/json
 #(token de client)
-Authorization: Bearer 1|dURZ7tX6hV5PFlNRNIdYTfq2zxl4H6yAbIyGyURN685c61e0
+Authorization: Bearer (token de client)
 
 ### CLIENT CREATE RESERVATION
 POST http://127.0.0.1:8000/api/reservations
 Content-Type: application/json
 Accept: application/json
 #(token de client)
-Authorization: Bearer 1|dURZ7tX6hV5PFlNRNIdYTfq2zxl4H6yAbIyGyURN685c61e0
+Authorization: Bearer (token de client)
 
 {
   "pet_id": 11,
@@ -94,26 +113,26 @@ Authorization: Bearer 1|dURZ7tX6hV5PFlNRNIdYTfq2zxl4H6yAbIyGyURN685c61e0
 PATCH http://127.0.0.1:8000/api/reservations/1/cancel
 Accept: application/json
 #(token de client)
-Authorization: Bearer 1|dURZ7tX6hV5PFlNRNIdYTfq2zxl4H6yAbIyGyURN685c61e0
+Authorization: Bearer (token de client)
 
 ### CLIENT -> STAFF RESERVATIONS (debe fallar)
 GET http://127.0.0.1:8000/api/staff/reservations
 Accept: application/json
 #(token de client)
-Authorization: Bearer 1|dURZ7tX6hV5PFlNRNIdYTfq2zxl4H6yAbIyGyURN685c61e0
+Authorization: Bearer (token de client)
 
 ### STAFF RESERVATIONS
 GET http://127.0.0.1:8000/api/staff/reservations
 Accept: application/json
 #(token de staff)
-Authorization: Bearer 2|rJE3p3sSL1wY0CXpLpm3fAZ9po5jcdyVZpsj8QyF5dc74248
+Authorization: Bearer (token de staff)
 
 ### STAFF UPDATE RESERVATION
 PATCH http://127.0.0.1:8000/api/staff/reservations/1
 Content-Type: application/json
 Accept: application/json
 #(token de staff)
-Authorization: Bearer 2|rJE3p3sSL1wY0CXpLpm3fAZ9po5jcdyVZpsj8QyF5dc74248
+Authorization: Bearer (token de staff)
 
 {
   "status": "confirmed"
@@ -124,7 +143,7 @@ POST http://127.0.0.1:8000/api/staff/reservations
 Content-Type: application/json
 Accept: application/json
 #(token de staff)
-Authorization: Bearer 2|rJE3p3sSL1wY0CXpLpm3fAZ9po5jcdyVZpsj8QyF5dc74248
+Authorization: Bearer (token de staff)
 
 {
   "client_user_id": 1,
@@ -147,20 +166,20 @@ Accept: application/json
 GET http://127.0.0.1:8000/api/resources
 Accept: application/json
 #(token de staff)
-Authorization: Bearer 4|IfMa4YFfZqZA0nSEN06nZUTIrYTLlG2ctf8mfbWA5082224d
+Authorization: Bearer (token de staff)
 
 ### CLIENT -> RESOURCES
 GET http://127.0.0.1:8000/api/resources
 Accept: application/json
 #(token de client) (debe fallar)
-Authorization: Bearer 5|BjRsg18GfMWQhAs9513nGM8eGYMghKkd28m8Se329a5b891f
+Authorization: Bearer (token de client)
 
 ### STAFF CREATE RESOURCE
 POST http://127.0.0.1:8000/api/resources
 Content-Type: application/json
 Accept: application/json
 #(token de staff)
-Authorization: Bearer 6|z41SZ0NEKVXGqGDnnCi3oJ9zVucKXd1PurJPoIF5c36f7ae5
+Authorization: Bearer (token de staff)
 
 {
   "name": "Box Norte 1",
@@ -176,7 +195,7 @@ PATCH http://127.0.0.1:8000/api/resources/1
 Content-Type: application/json
 Accept: application/json
 #(token de staff)
-Authorization: Bearer 6|z41SZ0NEKVXGqGDnnCi3oJ9zVucKXd1PurJPoIF5c36f7ae5
+Authorization: Bearer (token de staff)
 
 {
   "status": "cleaning"
@@ -186,11 +205,12 @@ Authorization: Bearer 6|z41SZ0NEKVXGqGDnnCi3oJ9zVucKXd1PurJPoIF5c36f7ae5
 GET http://127.0.0.1:8000/api/daily-reports/1/media
 Accept: application/json
 #(token de staff)
-Authorization: Bearer 8|k9snvcgPQKnuXPta2MsuAnovrFLOlx51AQAtJiH95c7edafb
+Authorization: Bearer (token de staff)
 
 ### STAFF UPLOAD MEDIA
 POST http://127.0.0.1:8000/api/daily-reports/1/media
-Authorization: Bearer 8|k9snvcgPQKnuXPta2MsuAnovrFLOlx51AQAtJiH95c7edafb
+#(token de staff)
+Authorization: Bearer (token de staff)
 Content-Type: multipart/form-data; boundary=WebKitFormBoundary
 
 --WebKitFormBoundary
@@ -208,10 +228,37 @@ Content-Type: image/jpeg
 DELETE http://127.0.0.1:8000/api/daily-reports/1/media/1
 Accept: application/json
 #(token de staff)
-Authorization: Bearer 8|k9snvcgPQKnuXPta2MsuAnovrFLOlx51AQAtJiH95c7edafb
+Authorization: Bearer (token de staff)
 
 ### CLIENT -> MEDIA (debe fallar)
 GET http://127.0.0.1:8000/api/daily-reports/1/media
 Accept: application/json
 #(token de client)
-Authorization: Bearer 7|pvlkv7RALA5FfWEKjP8ZxDpACZvivWAYaYMVwTFp41507012
+Authorization: Bearer (token de client)
+
+### CREATE SERVICE
+POST http://127.0.0.1:8000/api/services
+Content-Type: application/json
+#(token de admin)
+Authorization: Bearer (token de admin)
+
+{
+  "name": "Entrenamiento",
+  "description": "Sesiones básicas de obediencia",
+  "base_price": 35,
+  "booking_mode": "time_slot",
+  "duration_minutes": 60,
+  "slot_interval_min": 60,
+  "is_active": true
+}
+
+### UPDATE SERVICE
+PATCH http://127.0.0.1:8000/api/services/1
+Content-Type: application/json
+#(token de admin)
+Authorization: Bearer (token de admin)
+
+{
+  "base_price": 25,
+  "is_active": false
+}

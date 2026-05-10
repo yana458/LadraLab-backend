@@ -40,4 +40,10 @@ public function service()
 {
     return $this->belongsTo(Service::class);
 }
+
+//reportes
+public function dailyReports()
+{
+    return $this->hasMany(DailyReport::class);
+}
 }

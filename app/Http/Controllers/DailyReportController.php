@@ -55,6 +55,22 @@ class DailyReportController extends Controller
             $validated['published_at'] = now();
         }
 
+        $exists = DailyReport::where(
+            'reservation_id',
+            $validated['reservation_id']
+        )
+        ->where(
+            'report_date',
+            $validated['report_date']
+        )
+        ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'message' => 'Ya existe un informe para esta fecha'
+            ], 422);
+        }
+
         // CREAR REPORT
         $dailyReport = DailyReport::create($validated);
 

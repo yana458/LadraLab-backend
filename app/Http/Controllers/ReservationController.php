@@ -123,6 +123,12 @@ class ReservationController extends Controller
             ], 403);
         }
 
+        if ($reservation->status !== 'pending') {
+            return response()->json([
+                'message' => 'Esta reserva ya no puede modificarse'
+            ], 422);
+        }
+
         // VALIDACIÓN
         $validated = $request->validate([
             'start_at' => 'sometimes|date',
@@ -164,6 +170,12 @@ class ReservationController extends Controller
             return response()->json([
                 'message' => 'No tienes permisos para cancelar esta reserva'
             ], 403);
+        }
+
+        if ($reservation->status !== 'pending') {
+            return response()->json([
+                'message' => 'Esta reserva ya no puede cancelarse'
+            ], 422);
         }
 
         // CAMBIAR ESTADO

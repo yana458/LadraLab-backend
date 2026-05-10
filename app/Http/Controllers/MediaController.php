@@ -29,7 +29,7 @@ class MediaController extends Controller
     {
          // VALIDACIÓN
         $validated = $request->validate([
-            'file' => 'required|file|max:5120',
+            'file' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
             'file_type' => 'required|string|in:image,document,other',
         ]);
 

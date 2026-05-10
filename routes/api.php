@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 // AUTH
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\AdminUserController;
 // CLIENT
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\ReservationController;
@@ -51,6 +52,26 @@ Route::prefix('auth')->group(function () {
 Route::get('/services', [ServiceController::class, 'index']);
 Route::get('/services/{service}', [ServiceController::class, 'show']);
 
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+    Route::post('/services', [ServiceController::class, 'store']);
+    Route::patch('/services/{service}', [ServiceController::class, 'update']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN USERS
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth:sanctum', 'role:admin'])
+    ->prefix('admin')
+    ->group(function () {
+    Route::get('/users', [AdminUserController::class, 'index']);
+    Route::post('/users', [AdminUserController::class, 'store']);
+    Route::get('/users/{user}', [AdminUserController::class, 'show']);
+    Route::patch('/users/{user}', [AdminUserController::class, 'update']);
+});
+
 /*
 |--------------------------------------------------------------------------
 | CLIENT
@@ -65,7 +86,8 @@ Route::middleware(['auth:sanctum', 'role:client'])->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::apiResource('pets', PetController::class);
+    Route::apiResource('pets', PetController::class)
+    ->except(['create', 'edit']);
 
     /*
     |--------------------------------------------------------------------------
@@ -73,7 +95,8 @@ Route::middleware(['auth:sanctum', 'role:client'])->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::apiResource('reservations', ReservationController::class);
+    Route::apiResource('reservations', ReservationController::class)
+    ->except(['create', 'edit']);
 
     /*
     |--------------------------------------------------------------------------
@@ -122,7 +145,8 @@ Route::middleware(['auth:sanctum', 'role:staff,admin'])->prefix('staff')->group(
 
 Route::middleware(['auth:sanctum', 'role:staff,admin'])->group(function () {
 
-    Route::apiResource('resources', ResourceController::class);
+    Route::apiResource('resources', ResourceController::class)
+    ->except(['create', 'edit']);
 });
 
 /*
@@ -133,7 +157,8 @@ Route::middleware(['auth:sanctum', 'role:staff,admin'])->group(function () {
 
 Route::middleware(['auth:sanctum', 'role:staff,admin'])->group(function () {
 
-    Route::apiResource('daily-reports', DailyReportController::class);
+    Route::apiResource('daily-reports', DailyReportController::class)
+    ->except(['create', 'edit']);
 
     /*
     |--------------------------------------------------------------------------
