@@ -30,7 +30,7 @@ class MediaController extends Controller
          // VALIDACIÓN
         $validated = $request->validate([
             'file' => 'required|file|max:5120',
-            'file_type' => 'required|string|in:image,video,document',
+            'file_type' => 'required|string|in:image,document,other',
         ]);
 
         // GUARDAR ARCHIVO

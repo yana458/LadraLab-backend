@@ -13,15 +13,12 @@ return new class extends Migration
     {
        Schema::create('daily_reports', function (Blueprint $table) {
     $table->id();
-
     $table->foreignId('reservation_id')
           ->constrained()
           ->onDelete('cascade');
-
     $table->date('report_date');
-
+    $table->unique(['reservation_id', 'report_date']);
     $table->enum('status', ['draft', 'published'])->default('draft');
-
     $table->dateTime('published_at')->nullable();
 
     // CHECKLIST

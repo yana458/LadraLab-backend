@@ -191,18 +191,18 @@ Authorization: Bearer 8|k9snvcgPQKnuXPta2MsuAnovrFLOlx51AQAtJiH95c7edafb
 ### STAFF UPLOAD MEDIA
 POST http://127.0.0.1:8000/api/daily-reports/1/media
 Authorization: Bearer 8|k9snvcgPQKnuXPta2MsuAnovrFLOlx51AQAtJiH95c7edafb
-Content-Type: multipart/form-data; boundary=Boundary123
+Content-Type: multipart/form-data; boundary=WebKitFormBoundary
 
---Boundary123
+--WebKitFormBoundary
 Content-Disposition: form-data; name="file_type"
 
 image
---Boundary123
+--WebKitFormBoundary
 Content-Disposition: form-data; name="file"; filename="test.jpg"
 Content-Type: image/jpeg
 
 < ./test.jpg
---Boundary123--
+--WebKitFormBoundary--
 
 ### STAFF DELETE MEDIA
 DELETE http://127.0.0.1:8000/api/daily-reports/1/media/1
