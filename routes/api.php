@@ -52,6 +52,14 @@ Route::prefix('auth')->group(function () {
 Route::get('/services', [ServiceController::class, 'index']);
 Route::get('/services/{service}', [ServiceController::class, 'show']);
 
+Route::middleware(['auth:sanctum'])->group(function () {
+
+    Route::get(
+        '/services/{service}/availability',
+        [ServiceController::class, 'availability']
+    );
+});
+
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::post('/services', [ServiceController::class, 'store']);
     Route::patch('/services/{service}', [ServiceController::class, 'update']);

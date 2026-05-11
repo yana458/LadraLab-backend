@@ -30,6 +30,12 @@ Accept: application/json
   "password": "password"
 }
 
+### SERVICE AVAILABILITY
+GET http://127.0.0.1:8000/api/services/3/availability?date=2026-05-15
+Accept: application/json
+#(token de client)
+Authorization: Bearer (token de client)
+
 ### ADMIN USERS
 GET http://127.0.0.1:8000/api/admin/users
 #(token de admin)
