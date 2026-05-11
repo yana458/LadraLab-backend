@@ -79,4 +79,55 @@ class AuthController extends Controller
             'user' => $request->user()
         ]);
     }
+
+    /**
+     * Actualizar perfil del usuario autenticado
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:120',
+            'email' => 'sometimes|email|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:30',
+        ]);
+
+        $user->update($validated);
+
+        return response()->json([
+            'message' => 'Perfil actualizado correctamente',
+            'user' => $user
+        ]);
+    }
+
+    /**
+     * Cambiar contraseña
+     */
+    public function updatePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $user = $request->user();
+
+        // Verificar contraseña actual
+        if (!Hash::check($validated['current_password'], $user->password)) {
+
+            return response()->json([
+                'message' => 'La contraseña actual es incorrecta'
+            ], 422);
+        }
+
+        // Actualizar contraseña
+        $user->update([
+            'password' => $validated['password']
+        ]);
+
+        return response()->json([
+            'message' => 'Contraseña actualizada correctamente'
+        ]);
+    }
 }

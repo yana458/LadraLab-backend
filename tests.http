@@ -30,6 +30,29 @@ Accept: application/json
   "password": "password"
 }
 
+### UPDATE PROFILE
+PATCH http://127.0.0.1:8000/api/auth/profile
+Content-Type: application/json
+#(token de client)
+Authorization: Bearer (token de client)
+
+{
+  "name": "Cliente Actualizado",
+  "phone": "666999888"
+}
+
+### CHANGE PASSWORD
+PATCH http://127.0.0.1:8000/api/auth/profile/password
+Content-Type: application/json
+#(token de client)
+Authorization: Bearer (token de client)
+
+{
+  "current_password": "password",
+  "password": "nuevo123",
+  "password_confirmation": "nuevo123"
+}
+
 ### SERVICE AVAILABILITY
 GET http://127.0.0.1:8000/api/services/3/availability?date=2026-05-15
 Accept: application/json

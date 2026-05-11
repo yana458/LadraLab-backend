@@ -40,6 +40,12 @@ Route::prefix('auth')->group(function () {
 
         // Usuario autenticado
         Route::get('/me', [AuthController::class, 'me']);
+
+        // Actualizar perfil
+        Route::patch('/profile', [AuthController::class, 'updateProfile']);
+        
+        // Cambiar contraseña
+        Route::patch('/profile/password', [AuthController::class, 'updatePassword']);
     });
 });
 
