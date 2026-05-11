@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Media;
+use App\Models\DailyReport;
 
 class MediaSeeder extends Seeder
 {
@@ -13,11 +13,16 @@ class MediaSeeder extends Seeder
      */
     public function run(): void
     {
-        Media::create([
-        'daily_report_id' => 1,
-        'file_path' => 'images/test.jpg',
-        'file_type' => 'image',
-        'uploaded_at' => now(),
-    ]);
+        $reports = DailyReport::all();
+
+        foreach ($reports as $report) {
+
+            Media::create([
+                'daily_report_id' => $report->id,
+                'file_path' => 'daily-reports/demo-report.jpg',
+                'file_type' => 'image',
+                'uploaded_at' => now(),
+            ]);
+        }
     }
 }

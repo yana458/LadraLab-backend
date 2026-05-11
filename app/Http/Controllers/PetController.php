@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pet;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PetController extends Controller
 {
@@ -41,8 +42,19 @@ class PetController extends Controller
         'size' => 'nullable|string|max:50',
         'birth_date' => 'nullable|date',
         'care_notes' => 'nullable|string',
-        'photo_path' => 'nullable|string',
+        'photo' => 'nullable|image|max:2048',
     ]);
+
+    // SUBIR FOTO SI EXISTE
+    if ($request->hasFile('photo')) {
+
+        $path = $request->file('photo')->store(
+            'pets',
+            'public'
+        );
+
+        $validated['photo_path'] = $path;
+    }
 
     // CREAR MASCOTA
     $pet = Pet::create([
@@ -106,8 +118,31 @@ class PetController extends Controller
             'size' => 'nullable|string|max:50',
             'birth_date' => 'nullable|date',
             'care_notes' => 'nullable|string',
-            'photo_path' => 'nullable|string',
+            'photo' => 'nullable|image|max:2048',
+
         ]);
+
+        // SUBIR NUEVA FOTO SI EXISTE
+        if ($request->hasFile('photo')) {
+
+            // ELIMINAR FOTO ANTERIOR
+            if (
+                $pet->photo_path &&
+                Storage::disk('public')->exists($pet->photo_path)
+            ) {
+                Storage::disk('public')->delete(
+                    $pet->photo_path
+                );
+            }
+
+            // GUARDAR NUEVA FOTO
+            $path = $request->file('photo')->store(
+                'pets',
+                'public'
+            );
+
+            $validated['photo_path'] = $path;
+        }
 
     $pet->update($validated);
 
@@ -120,7 +155,7 @@ class PetController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Pet $pet)
+    public function destroy(Pet $pet, Request $request)
     {
         
     // Verificar ownership

@@ -77,17 +77,17 @@ Authorization: Bearer (token de admin)
 GET http://127.0.0.1:8000/api/pets
 Accept: application/json
 #(token de client)
-Authorization: Bearer (token de client)
+Authorization: Bearer 1|tmfk56YyO8DzJjIpvw442F5e0S2J2jjHUH25RTJ04dd665e7
 
 ### CLIENT CREATE PET
 POST http://127.0.0.1:8000/api/pets
 Content-Type: application/json
 Accept: application/json
 #(token de client)
-Authorization: Bearer (token de client)
+Authorization: Bearer 1|tmfk56YyO8DzJjIpvw442F5e0S2J2jjHUH25RTJ04dd665e7
 
 {
-  "name": "Luna",
+  "name": "Gigi",
   "species": "dog",
   "breed": "Beagle",
   "size": "medium",
