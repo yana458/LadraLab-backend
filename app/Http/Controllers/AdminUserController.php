@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class AdminUserController extends Controller
 {
@@ -34,7 +33,7 @@ class AdminUserController extends Controller
 
         $user = User::create([
             ...$validated,
-            'password' => Hash::make($validated['password']),
+            'password' => $validated['password'],
         ]);
 
         return response()->json([
@@ -71,6 +70,24 @@ class AdminUserController extends Controller
         return response()->json([
             'message' => 'Usuario actualizado correctamente',
             'data' => $user
+        ]);
+    }
+
+    /**
+     * ACTUALIZAR CONTRASEÑA DE USUARIO
+     */
+    public function updatePassword(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user->update([
+            'password' => $validated['password'],
+        ]);
+
+        return response()->json([
+            'message' => 'Contraseña actualizada correctamente.'
         ]);
     }
 }

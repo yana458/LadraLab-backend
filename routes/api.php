@@ -84,6 +84,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])
     Route::post('/users', [AdminUserController::class, 'store']);
     Route::get('/users/{user}', [AdminUserController::class, 'show']);
     Route::patch('/users/{user}', [AdminUserController::class, 'update']);
+    Route::patch('/users/{user}/password',[AdminUserController::class, 'updatePassword']);
 });
 
 /*
