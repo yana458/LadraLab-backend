@@ -155,22 +155,31 @@ class PetController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Pet $pet, Request $request)
+    public function destroy(Request $request, Pet $pet)
     {
-        
-    // Verificar ownership
-    if ($pet->owner_user_id !== $request->user()->id) {
+        // Verificar ownership
+        if ($pet->owner_user_id !== $request->user()->id) {
+
+            return response()->json([
+                'message' => 'No tienes permisos para eliminar esta mascota.'
+            ], 403);
+        }
+
+        // Verificar si tiene reservas asociadas
+        if ($pet->reservations()->exists()) {
+
+            return response()->json([
+                'message' => 'No se puede eliminar esta mascota porque tiene reservas asociadas. 
+                Conservamos su ficha para mantener el historial de reservas y seguimientos.'
+            ], 409);
+        }
+
+        // Eliminar mascota
+        $pet->delete();
 
         return response()->json([
-            'message' => 'No tienes permisos para modificar esta mascota'
-        ], 403);
-    }
-    
-    $pet->delete();
-
-    return response()->json([
-        'message' => 'Mascota eliminada'
-    ]);
+            'message' => 'Mascota eliminada correctamente.'
+        ]);
     }
 
     public function staffIndex()

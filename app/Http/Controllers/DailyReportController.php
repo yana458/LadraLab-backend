@@ -171,14 +171,21 @@ class DailyReportController extends Controller
             ], 403);
         }
 
-        // RESPUESTA
+        $query = DailyReport::with('media')
+            ->where(
+                'reservation_id',
+                $reservation->id
+            );
+
+        // CLIENTES SOLO VEN PUBLICADOS
+        if ($user->role === 'client') {
+
+            $query->where('status', 'published');
+        }
+
+        //RESPUESTA
         return response()->json([
-            'data' => DailyReport::with('media')
-                ->where(
-                    'reservation_id',
-                    $reservation->id
-                )
-                ->get()
+            'data' => $query->get()
         ]);
     }
 

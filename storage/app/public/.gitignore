@@ -2,3 +2,5 @@
 !.gitignore
 !pets/
 !pets/**
+!daily-reports/
+!daily-reports/**

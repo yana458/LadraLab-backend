@@ -15,11 +15,20 @@ class MediaSeeder extends Seeder
     {
         $reports = DailyReport::all();
 
-        foreach ($reports as $report) {
+        $images = [
+            'daily-reports/daily-report-1.jpg',
+            'daily-reports/daily-report-2.jpg',
+            'daily-reports/daily-report-3.jpg',
+            'daily-reports/daily-report-4.jpg',
+            'daily-reports/daily-report-5.jpg',
+            'daily-reports/daily-report-6.jpg',
+        ];
+
+        foreach ($reports as $index => $report) {
 
             Media::create([
                 'daily_report_id' => $report->id,
-                'file_path' => 'daily-reports/demo-report.jpg',
+                'file_path' => $images[$index % count($images)],
                 'file_type' => 'image',
                 'uploaded_at' => now(),
             ]);
