@@ -89,12 +89,37 @@ class PetSeeder extends Seeder
             'photo_path' => 'pets/mafito.jpg',
         ]);
 
-        // MASCOTAS ALEATORIAS
-        foreach ($clients as $client) {
+        Pet::create([
+            'owner_user_id' => $demoClient->id,
+            'name' => 'Coco',
+            'species' => 'dog',
+            'breed' => 'Caniche',
+            'size' => 'small',
+            'birth_date' => '2021-06-14',
+            'care_notes' => 'Muy sociable y le encanta jugar.',
+            'photo_path' => 'pets/coco.jpg',
+        ]);
 
-            Pet::factory(rand(1, 3))->create([
-                'owner_user_id' => $client->id,
-            ]);
-        }
+        Pet::create([
+            'owner_user_id' => $demoClient->id,
+            'name' => 'Rocky',
+            'species' => 'dog',
+            'breed' => 'Labrador',
+            'size' => 'large',
+            'birth_date' => '2020-09-02',
+            'care_notes' => 'Le encantan los paseos largos.',
+            'photo_path' => 'pets/rocky.jpg',
+        ]);
+
+        Pet::create([
+            'owner_user_id' => $demoClient->id,
+            'name' => 'Toby',
+            'species' => 'dog',
+            'breed' => 'Shiba Inu',
+            'size' => 'medium',
+            'birth_date' => '2022-01-18',
+            'care_notes' => 'Muy curioso y activo.',
+            'photo_path' => 'pets/toby.jpg',
+        ]);
     }
 }

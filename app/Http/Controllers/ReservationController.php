@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use App\Models\Resource;
 
 class ReservationController extends Controller
 {
@@ -60,6 +61,18 @@ class ReservationController extends Controller
             return response()->json([
                 'message' => 'No puedes crear reservas para mascotas ajenas'
             ], 403);
+        }
+
+        if (
+            isset($validated['resource_id']) &&
+            $this->resourceHasConflict(
+                $validated['resource_id'],
+                $validated['start_at'],
+                $validated['end_at'])
+        ) {
+            return response()->json([
+                'message' => 'El recurso seleccionado ya está ocupado en esas fechas.'
+            ], 409);
         }
 
         // CREAR RESERVA
@@ -135,6 +148,30 @@ class ReservationController extends Controller
             'end_at' => 'sometimes|date|after:start_at',
             'notes' => 'nullable|string',
         ]);
+
+        // DATOS ACTUALES O NUEVOS
+        $resourceId = $reservation->resource_id;
+
+        $startAt = $validated['start_at']
+            ?? $reservation->start_at;
+
+        $endAt = $validated['end_at']
+            ?? $reservation->end_at;
+
+        // VALIDAR CONFLICTO
+        if (
+            $resourceId &&
+            $this->resourceHasConflict(
+                $resourceId,
+                $startAt,
+                $endAt,
+                $reservation->id
+            )
+        ) {
+            return response()->json([
+                'message' => 'El recurso seleccionado ya está ocupado en esas fechas.'
+            ], 409);
+        }
 
         // ACTUALIZAR
         $reservation->update($validated);
@@ -223,6 +260,29 @@ class ReservationController extends Controller
             'notes' => 'nullable|string',
         ]);
 
+        $resourceId = $validated['resource_id']
+            ?? $reservation->resource_id;
+
+        $startAt = $validated['start_at']
+            ?? $reservation->start_at;
+
+        $endAt = $validated['end_at']
+            ?? $reservation->end_at;
+
+        if (
+            $resourceId &&
+            $this->resourceHasConflict(
+                $resourceId,
+                $startAt,
+                $endAt,
+                $reservation->id
+            )
+        ) {
+            return response()->json([
+                'message' => 'El recurso seleccionado ya está ocupado en esas fechas.'
+            ], 409);
+        }
+        
         // ACTUALIZAR
         $reservation->update($validated);
 
@@ -263,6 +323,17 @@ class ReservationController extends Controller
             ], 422);
         }
 
+        if (isset($validated['resource_id']) &&
+            $this->resourceHasConflict(
+                $validated['resource_id'],
+                $validated['start_at'],
+                $validated['end_at'])) 
+        {
+            return response()->json([
+                'message' => 'El recurso seleccionado ya está ocupado en esas fechas.'
+            ], 409);
+        }
+
         // CREAR RESERVA
         $reservation = Reservation::create([
             ...$validated,
@@ -279,5 +350,49 @@ class ReservationController extends Controller
                 'resource'
             ])
         ], 201);
+    }
+
+    private function resourceHasConflict(int $resourceId, string $startAt, string $endAt, ?int $ignoreReservationId = null): bool 
+    {
+        $resource = Resource::find($resourceId);
+        if (!$resource) {
+            return false;
+        }
+
+        // SI TIENE CAPACIDAD MAYOR A 1
+        // POR AHORA NO BLOQUEAMOS
+        if ($resource->capacity > 1) {
+            return false;
+        }
+
+        $query = Reservation::query()
+            ->where('resource_id', $resourceId)
+            ->whereIn('status', [
+                'pending',
+                'confirmed'
+            ])
+
+            // SOLAPAMIENTO DE FECHAS
+            ->where(function ($query) use ($startAt, $endAt) {
+
+                $query
+                    ->whereBetween('start_at', [$startAt, $endAt])
+                    ->orWhereBetween('end_at', [$startAt, $endAt])
+                    ->orWhere(function ($query) use ($startAt, $endAt) {
+                        $query
+                            ->where('start_at', '<=', $startAt)
+                            ->where('end_at', '>=', $endAt);
+                    });
+            });
+
+        // IGNORAR LA MISMA RESERVA EN UPDATE
+        if ($ignoreReservationId) {
+            $query->where(
+                'id',
+                '!=',
+                $ignoreReservationId
+            );
+        }
+        return $query->exists();
     }
 }

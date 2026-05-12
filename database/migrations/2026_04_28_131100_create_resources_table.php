@@ -16,7 +16,7 @@ return new class extends Migration
     $table->string('name', 80);
     $table->enum('type', ['kennel','yard','room','other'])->default('kennel');
     $table->enum('zone', ['hotel','daycare','support'])->default('hotel');
-    $table->enum('size_group', ['toy_small','medium','large','all'])->default('all');
+    $table->enum('size_group', ['toy', 'small','medium','large','all'])->default('all');
     $table->unsignedInteger('capacity')->default(1);
     $table->enum('status', ['active','cleaning','disabled'])->default('active');
     $table->timestamps();
